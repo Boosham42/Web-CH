@@ -6,20 +6,18 @@ import Image from 'next/image';
 import Sidebar from './components/Sidebar';
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [countdown, setCountdown] = useState(8);
-  const [navigationLoading, setNavigationLoading] = useState(false);
-  const [navigationProgress, setNavigationProgress] = useState(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [countdown, setCountdown] = useState<number>(8);
+  const [navigationLoading, setNavigationLoading] = useState<boolean>(false);
+  const [navigationProgress, setNavigationProgress] = useState<number>(0);
 
-  // Estados para animaciones de resize
-  const [isResizing, setIsResizing] = useState(false);
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [isResizing, setIsResizing] = useState<boolean>(false);
+  const [windowSize, setWindowSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
-  // Estado para hidratación
-  const [isClient, setIsClient] = useState(false);
-  const [hasSeenLoading, setHasSeenLoading] = useState(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
+  const [hasSeenLoading, setHasSeenLoading] = useState<boolean>(false);
 
   const series = [
     {
@@ -32,33 +30,29 @@ export default function Home() {
     {
       id: 'chespirito',
       title: 'Chespirito',
-      description:
-        'Sketches cómicos de personajes como El Chapulín Colorado y más.',
+      description: 'Sketches cómicos de personajes como El Chapulín Colorado y más.',
       image: '/images/chespirito.jpeg',
       href: '/Chespirito',
     },
   ];
 
-  const filteredSeries = series.filter(
-    (serie) =>
-      serie.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      serie.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSeries = series.filter((serie) =>
+    serie.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    serie.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const imageSources = series.map((s) => s.image).concat(['/images/ch.png']);
+  const imageSources: string[] = series.map((s) => s.image).concat(['/images/ch.png']);
 
-  // Hook para hidratación y sessionStorage
   useEffect(() => {
     setIsClient(true);
     const hasSeenLoadingValue = sessionStorage.getItem('hasSeenCHTVLoading');
     setHasSeenLoading(!!hasSeenLoadingValue);
   }, []);
 
-  // Hook para detectar cambios de tamaño de ventana
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    let resizeTimer;
+    let resizeTimer: ReturnType<typeof setTimeout>;
 
     const handleResize = () => {
       const newSize = {
@@ -66,20 +60,15 @@ export default function Home() {
         height: window.innerHeight,
       };
 
-      // Activar animación inmediatamente
       setIsResizing(true);
       setWindowSize(newSize);
 
-      // Limpiar timer anterior
       clearTimeout(resizeTimer);
-
-      // Terminar animación rápidamente
       resizeTimer = setTimeout(() => {
         setIsResizing(false);
       }, 300);
     };
 
-    // Establecer tamaño inicial
     setWindowSize({
       width: window.innerWidth,
       height: window.innerHeight,
@@ -93,19 +82,18 @@ export default function Home() {
     };
   }, []);
 
-  // Función para precargar recursos de la página destino
-  const preloadPageResources = async (href) => {
+  const preloadPageResources = async (href: string): Promise<boolean> => {
     if (typeof window === 'undefined') return false;
 
     try {
-      const imagesToPreload = [
+      const imagesToPreload: string[] = [
         '/images/El-Chavo-del-Ocho.jpg',
         '/images/chespirito.jpeg',
         '/images/ch.png',
       ];
 
-      const preloadImage = (src) => {
-        return new Promise((resolve, reject) => {
+      const preloadImage = (src: string): Promise<string> => {
+        return new Promise((resolve) => {
           if (typeof window === 'undefined') {
             resolve(src);
             return;
@@ -118,9 +106,7 @@ export default function Home() {
         });
       };
 
-      const preloadHTML = fetch(href)
-        .then((response) => response.text())
-        .catch(() => null);
+      const preloadHTML = fetch(href).then((response) => response.text()).catch(() => null);
 
       const imagePromises = imagesToPreload.map(preloadImage);
       await Promise.allSettled([preloadHTML, ...imagePromises]);
@@ -132,8 +118,7 @@ export default function Home() {
     }
   };
 
-  // Función para manejar la navegación con barra de carga
-  const handleNavigation = async (href) => {
+  const handleNavigation = async (href: string): Promise<void> => {
     setNavigationLoading(true);
     setNavigationProgress(0);
 

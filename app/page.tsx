@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import Sidebar from './components/Sidebar';
+import Layout from './components/Layout';
 
 export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -12,10 +11,6 @@ export default function Home() {
   const [countdown, setCountdown] = useState<number>(8);
   const [navigationLoading, setNavigationLoading] = useState<boolean>(false);
   const [navigationProgress, setNavigationProgress] = useState<number>(0);
-
-  const [isResizing, setIsResizing] = useState<boolean>(false);
-  const [windowSize, setWindowSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
-
   const [isClient, setIsClient] = useState<boolean>(false);
   const [hasSeenLoading, setHasSeenLoading] = useState<boolean>(false);
 
@@ -45,41 +40,9 @@ export default function Home() {
 
   useEffect(() => {
     setIsClient(true);
-    const hasSeenLoadingValue = sessionStorage.getItem('hasSeenCHTVLoading');
+    // Cambiar a sessionStorage para que se borre al cerrar la pestaña
+    const hasSeenLoadingValue = sessionStorage?.getItem('hasSeenCHTVLoading');
     setHasSeenLoading(!!hasSeenLoadingValue);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    let resizeTimer: ReturnType<typeof setTimeout>;
-
-    const handleResize = () => {
-      const newSize = {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      };
-
-      setIsResizing(true);
-      setWindowSize(newSize);
-
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        setIsResizing(false);
-      }, 300);
-    };
-
-    setWindowSize({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      clearTimeout(resizeTimer);
-    };
   }, []);
 
   const preloadPageResources = async (href: string): Promise<boolean> => {
@@ -107,7 +70,6 @@ export default function Home() {
       };
 
       const preloadHTML = fetch(href).then((response) => response.text()).catch(() => null);
-
       const imagePromises = imagesToPreload.map(preloadImage);
       await Promise.allSettled([preloadHTML, ...imagePromises]);
 
@@ -233,7 +195,8 @@ export default function Home() {
             loadingComplete = true;
             setLoading(false);
             if (typeof window !== 'undefined') {
-              sessionStorage.setItem('hasSeenCHTVLoading', 'true');
+              // Cambiar a sessionStorage para que se borre al cerrar la pestaña
+              sessionStorage?.setItem('hasSeenCHTVLoading', 'true');
             }
           }
           return 0;
@@ -247,7 +210,8 @@ export default function Home() {
         loadingComplete = true;
         setLoading(false);
         if (typeof window !== 'undefined') {
-          sessionStorage.setItem('hasSeenCHTVLoading', 'true');
+          // Cambiar a sessionStorage para que se borre al cerrar la pestaña
+          sessionStorage?.setItem('hasSeenCHTVLoading', 'true');
         }
       }
     }, 8000);
@@ -258,7 +222,7 @@ export default function Home() {
     };
   }, [isClient, hasSeenLoading]);
 
-  // Mostrar un loading simple hasta que se hidrate
+  // Loading inicial antes de hidratación
   if (!isClient) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 via-orange-100 to-red-100">
@@ -270,6 +234,7 @@ export default function Home() {
     );
   }
 
+  // Pantalla de carga inicial (solo primera vez por pestaña)
   if (loading && !hasSeenLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 via-orange-100 to-red-100 relative overflow-hidden">
@@ -277,7 +242,7 @@ export default function Home() {
         <div className="absolute top-20 left-10 w-32 h-32 bg-red-200 rounded-full opacity-40 animate-float"></div>
         <div className="absolute bottom-24 right-16 w-24 h-24 bg-orange-300 rounded-full opacity-30 animate-float-delayed"></div>
 
-        {/* Contador (sin botón Skip) */}
+        {/* Contador */}
         <div className="absolute top-8 left-8 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg z-20 border-2 border-red-200">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
@@ -347,9 +312,9 @@ export default function Home() {
     );
   }
 
-  // Página principal con animaciones de resize estilo Google
+  // Página principal con Layout
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 overflow-hidden relative animate-zoom-entrance">
+    <Layout>
       {/* Barra de carga tipo YouTube */}
       {navigationLoading && (
         <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-transparent">
@@ -363,134 +328,99 @@ export default function Home() {
         </div>
       )}
 
-      <Sidebar />
-
-      {/* Main content que detecta el sidebar */}
-      <div className="flex-grow flex flex-col justify-between relative z-10 ml-0 lg:ml-72 transition-all duration-300">
-        <div className="flex-grow">
-          {/* Barra de búsqueda */}
-          <div className="flex justify-center my-8 animate-slide-down px-4">
-            <div className="relative w-full max-w-md">
-              <input
-                type="text"
-                placeholder="🔍 Buscar series o episodios..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-6 py-3 rounded-full border-2 border-green-500 text-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300 focus:border-green-600 transition-all duration-300"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm('')}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  <i className="ri-close-line text-xl"></i>
-                </button>
-              )}
-            </div>
+      <div className="py-6 animate-zoom-entrance">
+        {/* Barra de búsqueda */}
+        <div className="flex justify-center my-8 animate-slide-down">
+          <div className="relative w-full max-w-md">
+            <input
+              type="text"
+              placeholder="🔍 Buscar series o episodios..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-6 py-3 rounded-full border-2 border-green-500 text-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300 focus:border-green-600 transition-all duration-300"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                <i className="ri-close-line text-xl"></i>
+              </button>
+            )}
           </div>
-
-          {/* Tarjetas de series con grid responsive que detecta el sidebar */}
-          <section
-            className={`px-4 sm:px-6 lg:px-8 max-w-full mx-auto transition-all duration-300 ease-out ${
-              isResizing ? 'opacity-90' : 'opacity-100'
-            }`}
-          >
-            <div
-              className={`grid gap-4 sm:gap-6 lg:gap-8 justify-items-center transition-all duration-300 ease-out ${
-                // Grid responsive optimizado para el espacio disponible después del sidebar
-                'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
-              } ${
-                isResizing ? 'transform scale-[0.98]' : 'transform scale-100'
-              }`}
-            >
-              {filteredSeries.map((serie, index) => (
-                <div
-                  key={serie.id}
-                  className={`w-full max-w-sm bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl group animate-zoom-in ${
-                    isResizing
-                      ? 'transform translate-y-1'
-                      : 'transform translate-y-0'
-                  }`}
-                  style={{
-                    transitionDelay: isResizing ? `${index * 30}ms` : '0ms',
-                  }}
-                  onMouseEnter={() => {
-                    if (!navigationLoading && typeof window !== 'undefined') {
-                      const link = document.createElement('link');
-                      link.rel = 'prefetch';
-                      link.href = serie.href;
-                      document.head.appendChild(link);
-
-                      const img = document.createElement('img');
-                      img.src = serie.image;
-                    }
-                  }}
-                >
-                  <div className="relative overflow-hidden">
-                    <Image
-                      src={serie.image}
-                      alt={serie.title}
-                      width={400}
-                      height={250}
-                      className="w-full h-48 sm:h-52 object-cover group-hover:scale-110 transition-transform duration-500"
-                      priority={true}
-                      loading="eager"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-
-                  <div className="p-4 sm:p-6 text-center">
-                    <h3 className="text-lg sm:text-xl font-bold text-red-700 mb-3 group-hover:text-red-600 transition-colors duration-300">
-                      {serie.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm sm:text-base mb-4 leading-relaxed line-clamp-3">
-                      {serie.description}
-                    </p>
-                    <button
-                      onClick={() => handleNavigation(serie.href)}
-                      disabled={navigationLoading}
-                      className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-none px-4 sm:px-6 py-2 sm:py-3 rounded-full cursor-pointer font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base"
-                    >
-                      {navigationLoading ? 'Cargando...' : 'Ver serie'}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Sin resultados */}
-          {filteredSeries.length === 0 && searchTerm && (
-            <div className="text-center py-12 animate-fade-in px-4">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-bold text-gray-700 mb-2">
-                No se encontraron resultados
-              </h3>
-              <p className="text-gray-600">
-                Intenta con otros términos de búsqueda
-              </p>
-            </div>
-          )}
         </div>
 
-        {/* Footer que no tiene margen porque ya está dentro del contenedor principal */}
-        <footer className="bg-gradient-to-r from-green-800 to-green-700 text-white text-center py-6 mt-auto shadow-2xl">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <i className="ri-heart-fill text-red-400"></i>
-            <span className="font-medium">© 2025 CH TV</span>
-            <i className="ri-heart-fill text-red-400"></i>
-          </div>
-          <p className="text-green-200 text-sm">
-            Inspirado en el legado de Roberto Gómez Bolaños
-          </p>
-        </footer>
+        {/* Tarjetas de series */}
+        <section className="max-w-full mx-auto">
+          <div className="grid gap-4 sm:gap-6 lg:gap-8 justify-items-center transition-all duration-300 ease-out grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {filteredSeries.map((serie, index) => (
+              <div
+                key={serie.id}
+                className="w-full max-w-sm bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl group animate-zoom-in"
+                onMouseEnter={() => {
+                  if (!navigationLoading && typeof window !== 'undefined') {
+                    const link = document.createElement('link');
+                    link.rel = 'prefetch';
+                    link.href = serie.href;
+                    document.head.appendChild(link);
 
-        {/* Orbes decorativos con animación sutil */}
-        <div className="absolute top-10 left-10 w-4 h-4 bg-red-300 rounded-full animate-float opacity-60"></div>
-        <div className="absolute top-40 right-20 w-6 h-6 bg-yellow-400 rounded-full animate-float-delayed opacity-40"></div>
-        <div className="absolute bottom-32 left-1/4 w-3 h-3 bg-green-400 rounded-full animate-float opacity-50"></div>
-        <div className="absolute bottom-16 right-16 w-5 h-5 bg-orange-300 rounded-full animate-float-delayed opacity-30"></div>
+                    const img = document.createElement('img');
+                    img.src = serie.image;
+                  }
+                }}
+              >
+                <div className="relative overflow-hidden">
+                  <Image
+                    src={serie.image}
+                    alt={serie.title}
+                    width={400}
+                    height={250}
+                    className="w-full h-48 sm:h-52 object-cover group-hover:scale-110 transition-transform duration-500"
+                    priority={true}
+                    loading="eager"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+
+                <div className="p-4 sm:p-6 text-center">
+                  <h3 className="text-lg sm:text-xl font-bold text-red-700 mb-3 group-hover:text-red-600 transition-colors duration-300">
+                    {serie.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm sm:text-base mb-4 leading-relaxed line-clamp-3">
+                    {serie.description}
+                  </p>
+                  <button
+                    onClick={() => handleNavigation(serie.href)}
+                    disabled={navigationLoading}
+                    className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-none px-4 sm:px-6 py-2 sm:py-3 rounded-full cursor-pointer font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base"
+                  >
+                    {navigationLoading ? 'Cargando...' : 'Ver serie'}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Sin resultados */}
+        {filteredSeries.length === 0 && searchTerm && (
+          <div className="text-center py-12 animate-fade-in">
+            <div className="text-6xl mb-4">🔍</div>
+            <h3 className="text-2xl font-bold text-gray-700 mb-2">
+              No se encontraron resultados
+            </h3>
+            <p className="text-gray-600">
+              Intenta con otros términos de búsqueda
+            </p>
+          </div>
+        )}
       </div>
-    </div>
+
+      {/* Orbes decorativos */}
+      <div className="absolute top-10 left-10 w-4 h-4 bg-red-300 rounded-full animate-float opacity-60 pointer-events-none"></div>
+      <div className="absolute top-40 right-20 w-6 h-6 bg-yellow-400 rounded-full animate-float-delayed opacity-40 pointer-events-none"></div>
+      <div className="absolute bottom-32 left-1/4 w-3 h-3 bg-green-400 rounded-full animate-float opacity-50 pointer-events-none"></div>
+      <div className="absolute bottom-16 right-16 w-5 h-5 bg-orange-300 rounded-full animate-float-delayed opacity-30 pointer-events-none"></div>
+    </Layout>
   );
 }

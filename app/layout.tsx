@@ -1,4 +1,5 @@
 import './globals.css';
+import '../styles/episodios.css';
 import type { Metadata } from 'next';
 import { Inter, Montserrat } from 'next/font/google';
 

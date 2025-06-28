@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div style="background-color:rgb(112, 0, 0); color:rgb(255, 255, 255); padding: 15px; text-align: center; font-weight: bold; font-size: 1.2em; border-radius: 10px;">
+  🚧 Página y Repositorio en Desarrollo 🚧
+</div>
 
-## Getting Started
+#
+# 📺 CH-TV
 
-First, run the development server:
+**CH-TV** es una página web gratuita que recopila episodios de programas clásicos y los presenta en una interfaz limpia, sin anuncios en lo posible , y con reproductor personalizado.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun run dev
-```
+> ⚠️ Proyecto educativo y sin fines de lucro.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 🎯Nuestro Objetivo
 
-## Learn More
+El objetivo de CH-TV es ofrecer una experiencia simple, rápida y amigable para ver capítulos usando un reproductor moderno (Plyr), con diseño optimizado para todos los dispositivos.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧐 CARACTERÍSTICAS
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- ✅ Reproductor HTML5 con [Plyr](https://github.com/sampotts/plyr)
+- ✅ Cambiar entre episodios sin recargar la página
+- ✅ Interfaz adaptada a PC y móviles
+- ✅ Botón para abrir el video original
+- ✅ Código limpio y organizado para fácil edición
+- ✅ Reproductor Personalizado para cada Serie
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛡️ ¿ES LEGAL?
+ Este sitio no aloja contenido de video directamente. Los episodios se muestran mediante enlaces públicos de terceros.
+ Si algún video infringe derechos, es responsabilidad del servicio original donde está alojado.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

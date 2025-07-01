@@ -6,7 +6,7 @@ Este repositorio es un homenaje sin fines de lucro al trabajo de Roberto Gómez 
 
 Nos comprometemos a revisar y actuar conforme a la ley.
 
-Para mas informacion Visita [Nuestro Aviso Legal](chespiritv.vercel.app/dmca) de Nuestra Pagina
+Para mas informacion Visita el [Aviso Legal](https://chespiritv.vercel.app/dmca) de Nuestra Pagina
 --- 
 
 **Fecha del aviso**: Julio 2025

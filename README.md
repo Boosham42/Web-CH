@@ -32,4 +32,7 @@ El objetivo de CH-TV es ofrecer una experiencia simple, rápida y amigable para 
 ## 🛡️ ¿ES LEGAL?
  Este sitio no aloja contenido de video directamente. Los episodios se muestran mediante enlaces públicos de terceros.
  Si algún video infringe derechos, es responsabilidad del servicio original donde está alojado.
+> ⚖️ Aviso Legal
+>CH TV es un proyecto sin fines de lucro. Consulta el [Aviso Legal](LEGAL.md) completo para más informacion
+
 

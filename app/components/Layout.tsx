@@ -3,6 +3,7 @@
 import { ReactNode, useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Image from 'next/image';
+import React from 'react';
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -22,7 +23,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
-      {/* Header móvil */}
+      {/* Barra de desarrollo fija */}
+      
+      {/* Header móvil - ajustado para estar debajo de la barra de desarrollo */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-green-800 text-white flex items-center px-4 py-3 shadow-md">
         <button
           onClick={() => setSidebarVisible(!sidebarVisible)}
@@ -34,8 +37,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         <span className="font-bold text-lg">CH TV</span>
       </header>
 
-      {/* Contenedor principal */}
-      <div className="flex pt-16 lg:pt-0 min-h-screen">
+      {/* Contenedor principal - ajustado padding top para la barra de desarrollo */}
+      <div className="flex pt-14 lg:pt-0 min-h-screen">
         {/* Sidebar con scroll propio */}
         <div
           className={`

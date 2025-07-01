@@ -19,9 +19,9 @@ export default function EpisodiosPage() {
       opciones: [
         {
           label: 'Opción 1',
-          src: 'https://861138102.tapecontent.net/radosgw/MrXbVp1AxYh1Dr/RTUUNE4zpTWSD2LlFF8bmiRWvUOO3VNDvbKh3gP8jajCfqISF6gb6PyYFUdDiIIm7tZKB1GzLlmtfkWA6xWqVDo_6yw8XFmcl0WcT7h4vRE48kVqkobmoYcsJSr5r5Lpls10aWCVf9Q2Qvql5sw5YZjK3zymtv_pB1KiigLkMniw9Z8iNB-TzCspQNkFcS5SGruPLZ58VMUQpSdZRGie6ENhq_UIPYX3mV2k0V0guxBxeihE7vwt-h6GC4OL1RBKucK35i2XnkPxKc40i1ijWQ9vTOdTfz_30Gr3Xg/Chavo+del+8+Sketch+1.mp4?stream=1',
+          src: 'https://streamtape.com/v/MrXbVp1AxYh1Dr/Chavo_del_8_Sketch_1.mp4',
           page: 'https://streamtape.com/v/MrXbVp1AxYh1Dr/Chavo_del_8_Sketch_1.mp4',
-          tipo: ''
+          tipo: 'streamtape'
         },
         {
           label: 'Opción 2',
@@ -32,18 +32,18 @@ export default function EpisodiosPage() {
       ]
     },
     {
-      titulo: 'Cap. 02 - El Ropavejero',
+      titulo: 'Cap. 02 - El Peso',
       img: 'https://fastly.picsum.photos/id/770/1024/768.jpg?hmac=NEvY_uKxsfAAo0ZafAA4qGfydOmAG1NHYQ6oyuo7soU',
       opciones: [
         {
           label: 'Opción 1',
-          src: 'https://861138102.tapecontent.net/radosgw/MrXbVp1AxYh1Dr/RTUUNE4zpTWSD2LlFF8bmiRWvUOO3VNDvbKh3gP8jajCfqISF6gb6PyYFUdDiIIm7tZKB1GzLlmtfkWA6xWqVDo_6yw8XFmcl0WcT7h4vRE48kVqkobmoYcsJSr5r5Lpls10aWCVf9Q2Qvql5sw5YZjK3zymtv_pB1KiigLkMniw9Z8iNB-TzCspQNkFcS5SGruPLZ58VMUQpSdZRGie6ENhq_UIPYX3mV2k0V0guxBxeihE7vwt-h6GC4OL1RBKucK35i2XnkPxKc40i1ijWQ9vTOdTfz_30Gr3Xg/Chavo+del+8+Sketch+1.mp4?stream=1',
-          page: 'https://streamtape.com/v/MrXbVp1AxYh1Dr/Chavo_del_8_Sketch_1.mp4',
-          tipo: ''
+          src: 'https://streamtape.com/v/j7xg8qD4mjFg36/Chavo_del_8_Sketch_2.mp4',
+          page: 'https://streamtape.com/v/j7xg8qD4mjFg36/Chavo_del_8_Sketch_2.mp4',
+          tipo: 'streamtape'
         },
         {
           label: 'Opción 2',
-          src: 'https://filemoon.to/e/t5oxo2bq5lk7/Chavo_del_8_Sketch_1.',
+          src: 'https://filemoon.to/e/dqgcf38o99w4',
           page: '',
           tipo: 'iframe'
         }
@@ -157,46 +157,73 @@ export default function EpisodiosPage() {
 
       player.once('ready', insertarBotonLink);
 
-      const handleButtonClick = (btn: HTMLButtonElement) => {
-        const src = btn.getAttribute('data-src') || '';
-        const page = btn.getAttribute('data-page') || src;
-        const esIframe = btn.getAttribute('data-tipo') === 'iframe';
-        currentVideoURL = page;
+      const handleButtonClick = async (btn: HTMLButtonElement) => {
+  const src = btn.getAttribute('data-src') || '';
+  const page = btn.getAttribute('data-page') || '';
+  const tipo = btn.getAttribute('data-tipo') || '';
+  currentVideoURL = page || src;
 
-        if (esIframe && iframe && advertencia && seguirBtn) {
-          player.pause();
-          player.stop();
-          const container = player.elements?.container;
-          if (container) {
-            container.style.display = 'none';
-          }
-          iframe.style.display = 'none';
-          iframe.src = '';
-          advertencia.style.display = 'block';
-          seguirBtn.onclick = () => {
-            advertencia.style.display = 'none';
-            iframe.src = src;
-            iframe.style.display = 'block';
-          };
-        } else {
-          if (iframe) {
-            iframe.style.display = 'none';
-            iframe.src = '';
-          }
-          if (advertencia) {
-            advertencia.style.display = 'none';
-          }
-          if (player.elements?.container) {
-            player.elements.container.style.removeProperty('display');
-          }
-          player.source = {
-            type: 'video',
-            sources: [{ src, type: 'video/mp4' }]
-          };
-          setTimeout(insertarBotonLink, 300);
-          player.play();
-        }
+  // Caso tipo: 'iframe'
+  if (tipo === 'iframe' && iframe && advertencia && seguirBtn) {
+    player.pause();
+    player.stop();
+    const container = player.elements?.container;
+    if (container) container.style.display = 'none';
+    iframe.style.display = 'none';
+    iframe.src = '';
+    advertencia.style.display = 'block';
+    seguirBtn.onclick = () => {
+      advertencia.style.display = 'none';
+      iframe.src = src;
+      iframe.style.display = 'block';
+    };
+    return;
+  }
+
+  // Caso tipo: 'streamtape' (usamos src como URL)
+  if (tipo === 'streamtape') {
+    try {
+      const res = await fetch(`/api/streamtape?url=${encodeURIComponent(src)}`);
+      const data = await res.json();
+
+      if (!data.success) {
+        alert('Error obteniendo video de Streamtape: ' + data.error);
+        return;
+      }
+
+      if (iframe) iframe.style.display = 'none';
+      if (advertencia) advertencia.style.display = 'none';
+      if (player.elements?.container) {
+        player.elements.container.style.removeProperty('display');
+      }
+
+      player.source = {
+        type: 'video',
+        sources: [{ src: data.playUrl, type: 'video/mp4' }],
       };
+      setTimeout(insertarBotonLink, 300);
+      player.play();
+    } catch (err) {
+      alert('Fallo al conectar con el backend de Streamtape');
+    }
+    return;
+  }
+
+  // Caso por defecto (mp4 directo)
+  if (iframe) iframe.style.display = 'none';
+  if (advertencia) advertencia.style.display = 'none';
+  if (player.elements?.container) {
+    player.elements.container.style.removeProperty('display');
+  }
+
+  player.source = {
+    type: 'video',
+    sources: [{ src, type: 'video/mp4' }]
+  };
+  setTimeout(insertarBotonLink, 300);
+  player.play();
+};
+
 
       const buttons = document.querySelectorAll<HTMLButtonElement>('.episodio button');
       buttons.forEach(btn => {
@@ -276,3 +303,4 @@ export default function EpisodiosPage() {
     </Layout>
   );
 }
+

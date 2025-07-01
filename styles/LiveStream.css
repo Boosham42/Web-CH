@@ -1,0 +1,56 @@
+.page-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333;
+}
+
+.video-container {
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.plyr video {
+  aspect-ratio: 16/9;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.rounded-box {
+  background: #f8f8f8;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.btn-like,
+.btn-share {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-like:hover,
+.btn-share:hover {
+  background-color: #f0f0f0;
+}

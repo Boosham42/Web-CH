@@ -1,6 +1,6 @@
-<div style="background-color:rgb(112, 0, 0); color:rgb(255, 255, 255); padding: 15px; text-align: center; font-weight: bold; font-size: 1.2em; border-radius: 10px;">
-  🚧 Página y Repositorio en Desarrollo 🚧
-</div>
+
+  >🚧 Página y Repositorio en Desarrollo 🚧
+
 
 #
 # 📺 CH-TV

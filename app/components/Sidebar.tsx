@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function Sidebar() {
   return (
-    <div className="w-72 min-w-[280px] bg-gradient-to-b from-green-800 to-green-600 text-white p-6 flex flex-col shadow-2xl z-50 overflow-y-auto overflow-x-auto max-w-full">
+    <div className="h-full max-h-screen w-72 min-w-[280px] bg-gradient-to-b from-green-800 to-green-600 text-white p-6 flex flex-col shadow-2xl z-50 overflow-y-auto">
       {/* Logo Section */}
       <div className="items-center mb-8 min-w-0">
         <div className="relative mb-8 flex justify-center">
@@ -37,7 +37,7 @@ export default function Sidebar() {
       <nav className="flex flex-col gap-3 mt-6 flex-grow min-w-0">
         {[
           { href: '/', icon: 'ri-home-2-line', label: 'Inicio' },
-          { href: '/chtv', icon: 'ri-tv-line', label: 'Ver CH TV' },
+          { href: '/livech', icon: 'ri-tv-line', label: 'Ver CH TV' },
           { href: '/temporadas', icon: 'ri-film-line', label: 'Temporadas' },
           { href: '/personajes', icon: 'ri-brush-line', label: 'Personajes' },
           { href: '/historia', icon: 'ri-book-open-line', label: 'Historia' },
@@ -56,18 +56,6 @@ export default function Sidebar() {
           </Link>
         ))}
 
-        {/* Canal CH Link - Ahora está dentro del área visible */}
-        <div className="border-t border-white/20 pt-4 mt-4">
-          <a
-            href="https://whatsapp.com/channel/CHTV"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center text-white no-underline p-3 rounded-lg transition-all duration-300 hover:bg-white/20 hover:translate-x-2 group whitespace-nowrap min-w-0"
-          >
-            <i className="ri-links-line mr-3 text-xl text-yellow-400 group-hover:scale-110 transition-transform duration-300 flex-shrink-0"></i>
-            <span className="font-medium truncate">Canal CH</span>
-          </a>
-        </div>
       </nav>
     </div>
   );

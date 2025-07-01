@@ -38,7 +38,7 @@ export default function Sidebar() {
         {[
           { href: '/', icon: 'ri-home-2-line', label: 'Inicio' },
           { href: '/livech', icon: 'ri-tv-line', label: 'Ver CH TV' },
-          { href: '/temporadas', icon: 'ri-film-line', label: 'Temporadas' },
+          { href: '/dmca', icon: 'ri-shield-check-fill', label: 'Legal (DMCA)' },
           { href: '/personajes', icon: 'ri-brush-line', label: 'Personajes' },
           { href: '/historia', icon: 'ri-book-open-line', label: 'Historia' },
           { href: '/canciones', icon: 'ri-music-line', label: 'Canciones' },
